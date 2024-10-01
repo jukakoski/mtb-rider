@@ -5,6 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
+import 'package:flutter_compass/flutter_compass.dart';
 
 void main() {
   runApp(const MtbRiderApp());
@@ -37,11 +38,18 @@ class _MapScreenState extends State<MapScreen> {
   LatLng? _currentLocation;
   LatLng? _lastLocation;
   bool _mapReady = false; // New flag to check if the map is ready
+  double? _currentHeading; // Store the current compass heading
 
   @override
   void initState() {
     super.initState();
     _getCurrentLocation();
+
+    FlutterCompass.events?.listen((CompassEvent event) {
+      setState(() {
+        _currentHeading = event.heading;
+      });
+    });
 
     StreamSubscription positionStream = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
@@ -70,9 +78,9 @@ class _MapScreenState extends State<MapScreen> {
             });
 
             // move the map if the map is ready
-            if (_mapReady && _currentLocation != null) {
+/*             if (_mapReady && _currentLocation != null) {
               _mapController.move(_currentLocation!, 15.0);
-            }
+            } */
           }
 
           debugPrint('Distance: $distance meters');
@@ -208,6 +216,22 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                   ],
                 ),
+                // Add the compass symbol overlay
+                if (_currentHeading != null)
+                  Positioned(
+                    top: 20,
+                    right: 20,
+                    child: Transform.rotate(
+                      angle: _currentHeading! *
+                          (3.141592653589793 /
+                              180), // Convert degrees to radians
+                      child: const Icon(
+                        Icons.navigation,
+                        color: Colors.red,
+                        size: 50.0,
+                      ),
+                    ),
+                  ),
               ],
             ),
       floatingActionButton: FloatingActionButton(

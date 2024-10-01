@@ -7,8 +7,8 @@ const RESOURCES = {"assets/AssetManifest.bin": "028cdb9d815cee3bf5762aedd42eeae8
 "assets/AssetManifest.bin.json": "23d5ab055984af9152000a8085800921",
 "assets/AssetManifest.json": "af236ac12b2f46aec036331dff11b999",
 "assets/FontManifest.json": "7b2a36307916a9721811788013e65289",
-"assets/fonts/MaterialIcons-Regular.otf": "23356ce74e4a863c96055f621ff38e7a",
-"assets/NOTICES": "7a29bff7af7deb5449c77830b1c87b86",
+"assets/fonts/MaterialIcons-Regular.otf": "e012361491e9a2a0b5bfc11b2c9efb05",
+"assets/NOTICES": "42da7914db50f9bd3dfe87ef3e9dc582",
 "assets/packages/flutter_map/lib/assets/flutter_map_logo.png": "208d63cc917af9713fc9572bd5c09362",
 "assets/shaders/ink_sparkle.frag": "4096b5150bac93c41cbc9b45276bd90f",
 "canvaskit/canvaskit.js": "eb8797020acdbdf96a12fb0405582c1b",
@@ -24,9 +24,9 @@ const RESOURCES = {"assets/AssetManifest.bin": "028cdb9d815cee3bf5762aedd42eeae8
 "icons/Icon-512.png": "96e752610906ba2a93c65f8abe1645f1",
 "icons/Icon-maskable-192.png": "c457ef57daa1d16f64b27b786ec2ea3c",
 "icons/Icon-maskable-512.png": "301a7604d45b3e739efc881eb04896ea",
-"index.html": "db1f36995469d1050258a5bbad537e62",
-"/": "db1f36995469d1050258a5bbad537e62",
-"main.dart.js": "95db446616d632fb0a8fd1b18b7a76ab",
+"index.html": "1bde482071e0861c5aa268d9a11422d1",
+"/": "1bde482071e0861c5aa268d9a11422d1",
+"main.dart.js": "288128ec5342b9982ad11ef7d7134c62",
 "manifest.json": "2f8b56aa66633aa5c12778491ddb2701",
 "version.json": "53de3fef74411db22e7a95509d5574c7"};
 // The application shell files that are downloaded before a service worker can
