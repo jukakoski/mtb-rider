@@ -5,7 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_map_cancellable_tile_provider/flutter_map_cancellable_tile_provider.dart';
-import 'package:flutter_compass/flutter_compass.dart';
+import 'package:flutter_map_compass/flutter_map_compass.dart';
 
 void main() {
   runApp(const MtbRiderApp());
@@ -44,12 +44,6 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
     _getCurrentLocation();
-
-    FlutterCompass.events?.listen((CompassEvent event) {
-      setState(() {
-        _currentHeading = event.heading;
-      });
-    });
 
     StreamSubscription positionStream = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
@@ -202,6 +196,7 @@ class _MapScreenState extends State<MapScreen> {
                   tileProvider:
                       CancellableNetworkTileProvider(), // Using cancellable tile provider
                 ),
+                const MapCompass.cupertino(),
                 MarkerLayer(
                   markers: [
                     Marker(
@@ -216,22 +211,6 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                   ],
                 ),
-                // Add the compass symbol overlay
-                if (_currentHeading != null)
-                  Positioned(
-                    top: 20,
-                    right: 20,
-                    child: Transform.rotate(
-                      angle: _currentHeading! *
-                          (3.141592653589793 /
-                              180), // Convert degrees to radians
-                      child: const Icon(
-                        Icons.navigation,
-                        color: Colors.red,
-                        size: 50.0,
-                      ),
-                    ),
-                  ),
               ],
             ),
       floatingActionButton: FloatingActionButton(
