@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -39,15 +41,39 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
     _getCurrentLocation();
+
+    StreamSubscription positionStream = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 100,
+        timeLimit: Duration(seconds: 10),
+      ),
+    ).listen(
+      (Position position) {
+        // Update the current location
+        setState(() {
+          _currentLocation = LatLng(position.latitude, position.longitude);
+        });
+
+        // move the map if the map is ready
+        if (_mapReady && _currentLocation != null) {
+          _mapController.move(_currentLocation!, 15.0);
+        }
+        print(
+            'Current Latitude: ${position.latitude}, Longitude: ${position.longitude}');
+      },
+    );
   }
 
   Future<void> _getCurrentLocation() async {
     LocationPermission permission;
 
-    setState(() {
-      // Set a mock location (example: a location in Prague)
-      _currentLocation = const LatLng(50.0755, 14.4378);
-    });
+    if (_currentLocation == null) {
+      setState(() {
+        // Set a mock location (example: a location in Prague)
+        _currentLocation = const LatLng(50.0755, 14.4378);
+      });
+    }
 
     // Check if location services are enabled
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
@@ -84,10 +110,15 @@ class _MapScreenState extends State<MapScreen> {
     }
   }
 
+  LocationSettings locationSettings = const LocationSettings(
+    accuracy: LocationAccuracy.high,
+    distanceFilter: 100,
+    timeLimit: Duration(seconds: 10),
+  );
+
   void _centralizeMap() {
-    if (_currentLocation != null && _mapReady) {
-      _mapController.move(_currentLocation!, 15.0);
-    }
+    // get my current location
+    _getCurrentLocation();
   }
 
   @override
@@ -101,7 +132,8 @@ class _MapScreenState extends State<MapScreen> {
           : FlutterMap(
               mapController: _mapController,
               options: MapOptions(
-                initialCenter: _currentLocation ?? const LatLng(50.0755, 14.4378), // Default to Prague
+                initialCenter: _currentLocation ??
+                    const LatLng(50.0755, 14.4378), // Default to Prague
                 initialZoom: 15.0,
                 interactionOptions: const InteractionOptions(
                   flags: InteractiveFlag.all,
@@ -127,7 +159,8 @@ class _MapScreenState extends State<MapScreen> {
                   urlTemplate:
                       'https://tile.mtbmap.cz/mtbmap_tiles/{z}/{x}/{y}.png',
                   subdomains: const ['a', 'b', 'c'],
-                  tileProvider: CancellableNetworkTileProvider(), // Using cancellable tile provider
+                  tileProvider:
+                      CancellableNetworkTileProvider(), // Using cancellable tile provider
                 ),
                 MarkerLayer(
                   markers: [
@@ -147,7 +180,7 @@ class _MapScreenState extends State<MapScreen> {
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: _centralizeMap,
-        tooltip: 'Center to My Location',
+        tooltip: 'Keskitä kartta omaan sijaintiin',
         child: const Icon(Icons.gps_fixed),
       ),
     );
