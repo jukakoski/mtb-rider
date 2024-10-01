@@ -35,6 +35,7 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen> {
   final MapController _mapController = MapController();
   LatLng? _currentLocation;
+  LatLng? _lastLocation;
   bool _mapReady = false; // New flag to check if the map is ready
 
   @override
@@ -50,16 +51,47 @@ class _MapScreenState extends State<MapScreen> {
       ),
     ).listen(
       (Position position) {
-        // Update the current location
-        setState(() {
-          _currentLocation = LatLng(position.latitude, position.longitude);
-        });
+        // If the last location is not null, calculate the distance
+        if (_lastLocation != null) {
+          double distance = Geolocator.distanceBetween(
+            _lastLocation!.latitude,
+            _lastLocation!.longitude,
+            position.latitude,
+            position.longitude,
+          );
 
-        // move the map if the map is ready
-        if (_mapReady && _currentLocation != null) {
-          _mapController.move(_currentLocation!, 15.0);
+          // if the distance is greater than 10 meters, update the last location
+          if (distance > 10) {
+            _lastLocation = LatLng(position.latitude, position.longitude);
+
+            // Update the current location
+            setState(() {
+              _currentLocation = LatLng(position.latitude, position.longitude);
+            });
+
+            // move the map if the map is ready
+            if (_mapReady && _currentLocation != null) {
+              _mapController.move(_currentLocation!, 15.0);
+            }
+          }
+
+          debugPrint('Distance: $distance meters');
+        } else {
+          // If the last location is null, update the last location and the current location
+          _lastLocation = LatLng(position.latitude, position.longitude);
+
+          // Update the current location
+          setState(() {
+            _currentLocation = LatLng(position.latitude, position.longitude);
+          });
+
+          // move the map if the map is ready
+          if (_mapReady && _currentLocation != null) {
+            _mapController.move(_currentLocation!, 15.0);
+          }
         }
-        print(
+
+        debugPrint(
             'Current Latitude: ${position.latitude}, Longitude: ${position.longitude}');
       },
     );
